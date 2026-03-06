@@ -25,7 +25,6 @@ const Select = forwardRef(function Select(
         </label>
       )}
 
-      // The select element with options
       <select
         id={id}
         ref={ref}
