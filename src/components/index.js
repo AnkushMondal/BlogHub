@@ -1,3 +1,5 @@
+// src/components/index.js
+
 // Layout Components
 import Header from "./layout/Header/Header";
 import Footer from "./layout/Footer/Footer";
@@ -11,26 +13,23 @@ import Logo from "./ui/Logo";
 import Select from "./ui/Select";
 
 // Post Components
-import PostCard from "./Post/PostCard";
-import RTE from "./Post/RTE";
-import PostForm from "./Post/PostForm";
+import PostCard from "./post/PostCard"; 
+import RTE from "./post/RTE";
+import PostForm from "./post/PostForm";
 
 import Signup from "./Signup";
 import Login from "./Login";
 import AuthLayout from "./AuthLayout";
 
 export {
-  // Layout
   Header,
   Footer,
   LogoutButton,
   Container,
-  // UI
   Button,
   Input,
   Logo,
   Select,
-  // Post
   PostCard,
   PostForm,
   RTE,
@@ -38,4 +37,3 @@ export {
   Login,
   AuthLayout,
 };
-
