@@ -32,6 +32,6 @@ function App() {
         <Footer />
       </div>
     </div>
-  ) : null;
+  ) : <>loading..  </>
 }
 export default App;
