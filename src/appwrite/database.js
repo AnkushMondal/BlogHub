@@ -1,5 +1,5 @@
 import config from "../config/config";
-import { Client, ID, TablesDB,Query } from "appwrite";
+import { Client, ID, TablesDB, Query } from "appwrite";
 
 export class DatabaseService {
   client = new Client();
@@ -14,20 +14,25 @@ export class DatabaseService {
     this.database = new TablesDB(this.client);
   }
 
-  async createPost({ title, slug, content, featuredImage, status, userId }) {//slug is the id
+  async createPost(post) {
     try {
+     
+      const rowId = post.slug || post.$id || ID.unique();
+
+      const payload = {
+        title: post.title,
+        content: post.content,
+        featuredImage: post.featuredImage,
+        status: post.status,
+        userId: post.userId,
+        category: post.category, // new field
+      };
+
       return await this.database.createRow(
         config.appwriteDatabaseId,
         config.appwriteTablesId,
-        slug, // row ID
-        {
-          title,
-          slug,
-          content,
-          featuredImage,
-          status,
-          userId,
-        },
+        rowId,
+        payload,
       );
     } catch (error) {
       console.log("Create Post Error:", error);
@@ -35,52 +40,57 @@ export class DatabaseService {
     }
   }
 
-  async updatePost(slug, { title, content, featuredImage, status }) {
-    try {
-      return await this.database.updateRow(
-        config.appwriteDatabaseId,
-        config.appwriteTablesId,
-        slug,
-        {
-          title,
-          content,
-          featuredImage,
-          status,
-        },
-      );
-    } catch (error) {
-      console.log("Update Post Error:", error);
-      throw error;
-    }
-  }
+  async updatePost(rowId, post) {
+  try {
+    const payload = {
+      title: post.title,
+      content: post.content,
+      featuredImage: post.featuredImage,
+      status: post.status,
+      category: post.category,
+    };
 
-  async deletePost(slug) {
+    return await this.database.updateRow(
+      config.appwriteDatabaseId,
+      config.appwriteTablesId,
+      rowId,
+      payload
+    );
+  } catch (error) {
+    console.log("Update Post Error:", error);
+    throw error;
+  }
+}
+
+  async deletePost(rowId) {
     try {
       await this.database.deleteRow(
         config.appwriteDatabaseId,
         config.appwriteTablesId,
-        slug,
+        rowId
       );
       return true;
     } catch (error) {
       console.log("Delete Post Error:", error);
       throw error;
-      
     }
   }
-  async getPost(slug) {
+
+  async getPost(rowId) {
     try {
       return await this.database.getRow(
         config.appwriteDatabaseId,
         config.appwriteTablesId,
-        slug,
+        rowId,
       );
     } catch (error) {
       console.log("Get Post Error:", error);
       throw error;
     }
   }
-  async getPosts(queries = [Query.equal("status", "active")]) {
+  // list rows from table; caller may pass filtering queries
+  // default empty array returns all documents (no status filtering)
+  async getPosts(queries = []) {
     try {
       return await this.database.listRows(
         config.appwriteDatabaseId,
